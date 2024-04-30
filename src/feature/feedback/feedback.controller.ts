@@ -1,23 +1,23 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put } from '@nestjs/common';
-import { UserService } from './user.service';
+import { FeedbackService } from './feedback.service';
 import { ApiQueryParams } from 'util/decorator/api-query-params.decorator';
 import AqpDto from 'util/interceptor/aqp/aqp.dto';
 import ParseObjectIdPipe from 'util/pipe/parse-object.pipe';
 import { Types } from 'mongoose';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateFeedbackDto } from './dto/create-feedback.dto';
+import { UpdateFeedbackDto } from './dto/update-feedback.dto';
 import { ApiTags } from '@nestjs/swagger';
 
-@ApiTags("Users")
-@Controller('user')
-export class UserController {
-    constructor(readonly userService: UserService) { }
+@ApiTags("Feedbacks")
+@Controller('feedback')
+export class FeedbackController {
+    constructor(readonly feedbackService: FeedbackService) { }
 
     @Get('')
     async findAll(
         @ApiQueryParams() { filter, population, ...options }: AqpDto,
     ): Promise<any> {
-        return this.userService.findManyBy(filter, {
+        return this.feedbackService.findManyBy(filter, {
             populate: population,
             options,
         });
@@ -25,23 +25,23 @@ export class UserController {
 
     @Post('')
     @HttpCode(201)
-    async create(@Body() body: CreateUserDto): Promise<any> {
-        const result = await this.userService.create(body);
+    async create(@Body() body: CreateFeedbackDto): Promise<any> {
+        const result = await this.feedbackService.create(body);
         return result;
     }
 
     @Put(':id')
     async update(
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-        @Body() body: UpdateUserDto,
+        @Body() body: UpdateFeedbackDto,
     ): Promise<any> {
-        const result = await this.userService.updateOneById(id, body);
+        const result = await this.feedbackService.updateOneById(id, body);
         return result;
     }
 
     @Delete(':ids/ids')
     async deleteManyByIds(@Param('ids') ids: string): Promise<any> {
-        const result = await this.userService.deleteManyHardByIds(
+        const result = await this.feedbackService.deleteManyHardByIds(
             ids.split(',').map((item: any) => new Types.ObjectId(item)),
         );
         return result;
@@ -51,13 +51,13 @@ export class UserController {
     async delete(
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
     ): Promise<any> {
-        const result = await this.userService.deleteOneHardById(id);
+        const result = await this.feedbackService.deleteOneHardById(id);
         return result;
     }
 
     @Get('paginate')
     async paginate(@ApiQueryParams() query: AqpDto): Promise<any> {
-        return this.userService.paginate(query);
+        return this.feedbackService.paginate(query);
     }
 
     @Get(':id')
@@ -65,7 +65,7 @@ export class UserController {
         @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
         @ApiQueryParams() { filter, population, projection }: AqpDto,
     ): Promise<any> {
-        const result = await this.userService.findOneById(id, {
+        const result = await this.feedbackService.findOneById(id, {
             populate: population,
             projection,
         });
