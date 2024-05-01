@@ -1,0 +1,7 @@
+export enum StatusBillEnum {
+    WAIT = "WAIT",
+    CONFIRMED = "CONFIRMED",
+    DELIVERING = "DELIVERING",
+    RECEIVED = "RECEIVED",
+    CANCELLED = "CANCELLED"
+}

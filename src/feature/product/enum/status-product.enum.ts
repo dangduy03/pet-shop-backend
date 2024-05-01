@@ -1,4 +1,4 @@
-export enum StatusEnum {
+export enum StatusProductEnum {
     AVAILABLE = "AVAILABLE",
     UNAVAILABLE = "UNAVAILABLE"
 }

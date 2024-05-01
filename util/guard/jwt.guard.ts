@@ -22,6 +22,7 @@ export class JwtGuard implements CanActivate {
         ]);
         if (isPublic) {
             // 💡 See this condition
+            console.log("thro");
             return true;
         }
 

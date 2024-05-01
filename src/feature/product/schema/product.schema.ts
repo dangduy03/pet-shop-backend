@@ -1,8 +1,7 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-
 import { HydratedDocument } from "mongoose";
 import { GenderEnum } from "../enum/gender.enum";
-import { StatusEnum } from "../enum/status.enum";
+import { StatusProductEnum } from "../enum/status-product.enum";
 
 @Schema({ timestamps: true, collection: "products" })
 export class Product {
@@ -19,8 +18,8 @@ export class Product {
     @Prop({ type: String, default: "" })
     color: string;
 
-    @Prop({ type: String, default: StatusEnum.AVAILABLE })
-    status: StatusEnum;
+    @Prop({ type: String, default: StatusProductEnum.AVAILABLE })
+    status: StatusProductEnum;
 
     @Prop({ type: String, default: "" })
     origin: string;

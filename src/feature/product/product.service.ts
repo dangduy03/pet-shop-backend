@@ -10,5 +10,5 @@ export class ProductService extends BaseService<ProductDocument> {
     ) {
         super(productRepository);
     }
-    async 
+    
 }
