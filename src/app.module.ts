@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -14,6 +14,7 @@ import { CartModule } from './feature/cart/cart.module';
 import { BillModule } from './feature/bill/bill.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { FeedbackModule } from './feature/feedback/feedback.module';
+import AQPMiddleware from 'util/interceptor/aqp/aqp.middleware';
 
 
 const routers = [
@@ -46,4 +47,10 @@ const routers = [
     },
   ],
 })
-export class AppModule { }
+export default class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(AQPMiddleware).forRoutes({
+      path: '*', method: RequestMethod.GET
+    });
+  }
+}
