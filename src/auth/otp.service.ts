@@ -1,22 +1,28 @@
 import { InjectRedis } from "@liaoliaots/nestjs-redis";
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import Redis from "ioredis";
 import { Types } from "mongoose";
 import * as Ramdomstring from 'randomstring';
 import { UserService } from "src/feature/user/user.service";
+import { MailService } from "src/provider/mail/mail.service";
 @Injectable()
 export class OtpService {
     constructor(
         private userService: UserService,
-
-
+        private mailService: MailService,
         @InjectRedis() private readonly redis: Redis
     ) { }
 
     async sendOtp(
         email: any,
     ) {
-        const result = await this.redis.set(email, Ramdomstring.generate(10), 'EX', 10);
+        const checkOtp = await this.redis.get(email);
+        if (checkOtp) {
+            await this.redis.del(email);
+        }
+        const otp = Ramdomstring.generate(10);
+        const result = await this.redis.set(email, otp, 'EX', 10);
+        await this.sendOtpEmail(email,otp);
         return {
             message: "OTP send successfull",
             code: 200
@@ -25,11 +31,9 @@ export class OtpService {
 
     async verifiedOtp(
         otp: string,
-        userId: string,
-
+        email: string
     ) {
-        const user = await this.userService.findOneById(new Types.ObjectId(userId));
-        const checkOtp = await this.redis.get(userId);
+        const checkOtp = await this.redis.get(email);
         if (checkOtp && checkOtp == otp) {
             return {
                 message: "verified OTP successfull",
@@ -37,6 +41,30 @@ export class OtpService {
             };
         } else {
             return new ConflictException("OTP not valid");
+        }
+    }
+
+    async sendOtpEmail(email: string, otpCode: string) {
+        try {
+            await this.mailService.sendMail(
+                [
+                    {
+                        name:'',
+                        address: email,
+                    }
+                ],
+                'PetShop Otp Auth',
+                undefined,
+                undefined,
+                {
+                    VERIFICATION_CODE: otpCode
+                },
+                "otpTemplate"
+            );
+
+        } catch (e) {
+            console.log(e);
+            throw new NotFoundException("Failed  to send OTP. Please try again");
         }
     }
 }

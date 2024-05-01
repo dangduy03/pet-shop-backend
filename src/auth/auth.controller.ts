@@ -4,6 +4,7 @@ import { SignInDto } from './dto/sign-in.dto';
 import { Public } from 'util/guard/jwt.guard';
 import { CreateUserDto } from 'src/feature/user/dto/create-user.dto';
 import { OtpService } from './otp.service';
+import { VerifiedOtpDto } from './dto/verified-otp.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -24,10 +25,16 @@ export class AuthController {
         return this.authService.signUp(user);
     }
 
-    @Public() 
+    @Public()
     @Post('send-otp')
     sendOtp(@Body() user: CreateUserDto) {
         return this.otpService.sendOtp(user);
+    }
+
+    @Public()
+    @Post('vefified-otp')
+    verifiedOtp(@Body() pagram: VerifiedOtpDto) {
+        return this.otpService.verifiedOtp(pagram.otp, pagram.email);
     }
 
 }
