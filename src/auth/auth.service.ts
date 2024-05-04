@@ -35,4 +35,21 @@ export class AuthService {
             return result;
         }
     }
+
+    async resetPassword(email: string, password : string):Promise<any> {
+        const user = await this.userService.findOneBy({
+            email,
+        });
+        if(!user) {
+            throw new UnauthorizedException();
+        }
+
+        user.password = password;
+        const id = user._id;
+        delete user._id;
+
+        const result = await this.userService.updateOneById(id,user);
+
+        return result;
+    }
 }

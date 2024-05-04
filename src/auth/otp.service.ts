@@ -1,7 +1,6 @@
 import { InjectRedis } from "@liaoliaots/nestjs-redis";
 import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import Redis from "ioredis";
-import { Types } from "mongoose";
 import * as Ramdomstring from 'randomstring';
 import { UserService } from "src/feature/user/user.service";
 import { MailService } from "src/provider/mail/mail.service";
@@ -21,8 +20,8 @@ export class OtpService {
             await this.redis.del(email);
         }
         const otp = Ramdomstring.generate(10);
-        const result = await this.redis.set(email, otp, 'EX', 10);
-        await this.sendOtpEmail(email,otp);
+        const result = await this.redis.set(email, otp, 'EX', 300);
+        await this.sendOtpEmail(email, otp);
         return {
             message: "OTP send successfull",
             code: 200
@@ -46,10 +45,11 @@ export class OtpService {
 
     async sendOtpEmail(email: string, otpCode: string) {
         try {
+            console.log("email: " + email);
             await this.mailService.sendMail(
                 [
                     {
-                        name:'',
+                        name: '',
                         address: email,
                     }
                 ],
