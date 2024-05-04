@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/sign-in.dto';
 import { Public } from 'util/guard/jwt.guard';
@@ -27,8 +27,8 @@ export class AuthController {
 
     @Public()
     @Post('send-otp')
-    sendOtp(@Body() user: CreateUserDto) {
-        return this.otpService.sendOtp(user);
+    sendOtp(@Body() body: any) {
+        return this.otpService.sendOtp(body.email);
     }
 
     @Public()
@@ -37,4 +37,13 @@ export class AuthController {
         return this.otpService.verifiedOtp(pagram.otp, pagram.email);
     }
 
+    @Public()
+    @Post('change-password')
+    resetPassword(@Body() body: any) {
+        if (!body.email || !body.password) {
+            return new BadRequestException("email and password required!");
+        }
+        const { email, password } = body;
+        return this.authService.resetPassword(email, password);
+    }
 }
