@@ -30,6 +30,9 @@ export class User {
     @Prop({ type: [String], default: [] })
     address: string[];
 
+    @Prop({ type: String, default: ''})
+    avatar: string;
+
 }
 export type UserDocument = HydratedDocument<User>;
 const UserSchema = SchemaFactory.createForClass(User);
