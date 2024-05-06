@@ -15,6 +15,7 @@ import { BillModule } from './feature/bill/bill.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { FeedbackModule } from './feature/feedback/feedback.module';
 import AQPMiddleware from 'util/interceptor/aqp/aqp.middleware';
+import { UploadModule } from './provider/upload-file-service/upload.module';
 
 
 const routers = [
@@ -24,7 +25,8 @@ const routers = [
   CategoryModule,
   CartModule,
   BillModule,
-  FeedbackModule
+  FeedbackModule,
+  UploadModule
 ];
 
 @Module({

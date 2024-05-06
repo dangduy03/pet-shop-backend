@@ -45,7 +45,6 @@ export class OtpService {
 
     async sendOtpEmail(email: string, otpCode: string) {
         try {
-            console.log("email: " + email);
             await this.mailService.sendMail(
                 [
                     {
@@ -63,7 +62,6 @@ export class OtpService {
             );
 
         } catch (e) {
-            console.log(e);
             throw new NotFoundException("Failed  to send OTP. Please try again");
         }
     }
