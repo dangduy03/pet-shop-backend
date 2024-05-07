@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { StatusBillEnum } from './enum/status-bill.enum';
 
 @ApiTags("Bills")
 @Controller('bill')
@@ -26,7 +27,9 @@ export class BillController {
     @Post('')
     @HttpCode(201)
     async create(@Body() body: CreateBillDto): Promise<any> {
+        body.status = StatusBillEnum.WAIT;
         const result = await this.billService.create(body);
+        await this.billService.emptyPurchaseCart(body.userId);
         return result;
     }
 

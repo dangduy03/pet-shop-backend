@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post, Put, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { ApiQueryParams } from 'util/decorator/api-query-params.decorator';
 import AqpDto from 'util/interceptor/aqp/aqp.dto';
@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @ApiTags("Products")
 @Controller('product')
@@ -24,9 +25,10 @@ export class ProductController {
     }
 
     @Post('')
+    @UseInterceptors(FilesInterceptor('files'))
     @HttpCode(201)
-    async create(@Body() body: CreateProductDto): Promise<any> {
-        const result = await this.productService.create(body);
+    async create(@Body() body: CreateProductDto,@UploadedFiles() files: Array<Express.Multer.File>): Promise<any> {
+        const result = await this.productService.createProduct(body,files);
         return result;
     }
 

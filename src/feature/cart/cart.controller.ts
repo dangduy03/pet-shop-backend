@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 import { CreateCartDto } from './dto/create-cart.dto';
 import { UpdateCartDto } from './dto/update-cart.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { GetCurrentUserId } from 'util/decorator/get-current-user-id.decorator';
 
 @ApiTags("Carts")
 @Controller('cart')
@@ -29,6 +30,27 @@ export class CartController {
         const result = await this.cartService.create(body);
         return result;
     }
+
+    @Post('add-to-cart')
+    @HttpCode(201)
+    async addToCart(
+        @GetCurrentUserId() userId: string,
+        @Body() body: any
+    ){
+        const result = await this.cartService.addToCart(body.productId,userId, body.quantity);
+        return result;
+    }
+
+    @Post('decrease-cart')
+    @HttpCode(201)
+    async desceaseCartQuantity(
+        @GetCurrentUserId() userId: string,
+        @Body() body: any
+    ){
+        const result = await this.cartService.desceaseCartQuantity(body.productId,userId);
+        return result;
+    }
+
 
     @Put(':id')
     async update(

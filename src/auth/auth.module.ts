@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from 'util/constant/secrect.constant';
 import { OtpService } from './otp.service';
 import { MailModule } from 'src/provider/mail/mail.module';
+import { CartModule } from 'src/feature/cart/cart.module';
 
 @Module({
     imports: [
@@ -14,7 +15,8 @@ import { MailModule } from 'src/provider/mail/mail.module';
             secret: jwtConstants.secret,
             signOptions: { expiresIn: '7d' },
         }),
-        MailModule
+        MailModule,
+        CartModule
     ],
     providers: [AuthService, OtpService],
     controllers: [AuthController],
