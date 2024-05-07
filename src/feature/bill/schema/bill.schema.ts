@@ -19,6 +19,17 @@ export class Bill {
     @Prop({ type: String, default: PayMethodEnum.DIRECT })
     payMethod: PayMethodEnum;
 
+    @Prop({ type: [
+        {
+            productId: {type: String, ref: "Product"},
+            quantity: {type: Number, default: 0}
+        }
+    ], default: [] })
+    products: {
+        productId: string,
+        quantity: number,
+    }[];
+
     @Prop({ type: String, default: "" })
     totalPrice: string;
 

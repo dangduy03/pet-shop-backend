@@ -51,4 +51,41 @@ export class UploadService {
             stream.end(file.buffer);
         });
     }
+
+    async uploadImage(file: Express.Multer.File){
+        const bucket = this.firebaseAdmin
+            .storage()
+            .bucket('gs://pet-shop-d68c0.appspot.com');
+        const extenstion = file.originalname.split('.').pop();
+        file.originalname = `${Randomstring.generate(10)}.${extenstion}`;
+
+        const blob = bucket.file(`${file.originalname}`);
+        // check if file exists
+        const [exists] = await blob.exists();
+        if (exists) {
+            await blob.delete();
+        }
+        const stream = blob.createWriteStream({
+            metadata: {
+                contentLength: file.size, // Kích thước tệp
+                contentType: file.mimetype, // Định dạng tệp
+            },
+        });
+
+        return new Promise((resolve, reject) => {
+            stream.on('finish', () => {
+                // Tải lên hoàn tất
+                blob.makePublic().then(async () => {
+                    resolve(blob.publicUrl());
+                });
+            });
+
+            stream.on('error', (error) => {
+                // Xảy ra lỗi trong quá trình tải lên
+                reject(error);
+            });
+
+            stream.end(file.buffer);
+        });
+    }
 }

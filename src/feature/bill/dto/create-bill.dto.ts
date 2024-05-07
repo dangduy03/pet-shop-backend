@@ -30,4 +30,11 @@ export class CreateBillDto {
     @IsString()
     totalPrice: string;
 
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsArray()
+    products: {
+        productId: string,
+        quantity: number,
+    }[];
 }

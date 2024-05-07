@@ -4,12 +4,14 @@ import { CreateUserDto } from 'src/feature/user/dto/create-user.dto';
 import { RoleEnum } from 'src/feature/user/enum/role.enum';
 import { UserService } from 'src/feature/user/user.service';
 import * as bcrypt from "bcrypt";
+import { CartService } from 'src/feature/cart/cart.service';
 
 @Injectable()
 export class AuthService {
     constructor(
         private userService: UserService,
         private jwtService: JwtService,
+        private cartservice: CartService
     ) { }
 
     async signIn(username: string, pass: string): Promise<any> {
@@ -32,6 +34,10 @@ export class AuthService {
         if (users) return new ConflictException("Account exits");
         else {
             const result = await this.userService.create(user);
+            await this.cartservice.create({
+                userId: result._id,
+                products: []
+            })
             return result;
         }
     }
