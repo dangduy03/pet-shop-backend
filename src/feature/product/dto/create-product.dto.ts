@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { GenderEnum } from "../enum/gender.enum";
 import { StatusProductEnum } from "../enum/status-product.enum";
 import { ApiProperty } from "@nestjs/swagger";
@@ -43,4 +43,10 @@ export class CreateProductDto {
     @IsNotEmpty()
     @IsArray()
     images: string[];
+
+    
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsNumber()
+    price: number;
 }

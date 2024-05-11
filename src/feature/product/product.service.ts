@@ -12,6 +12,7 @@ export class ProductService extends BaseService<ProductDocument> {
         readonly uploadService: UploadService
     ) {
         super(productRepository);
+        
     }
 
     async createProduct(body: CreateProductDto, files: Array<Express.Multer.File>) {
