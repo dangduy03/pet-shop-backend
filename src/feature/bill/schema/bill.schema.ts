@@ -13,7 +13,7 @@ export class Bill {
     @Prop({ type: String, default: "" })
     address: string;
 
-    @Prop({ type: String, default: StatusBillEnum.WAIT })
+    @Prop({ type: String, default: StatusBillEnum.WAITING })
     status: StatusBillEnum;
 
     @Prop({ type: String, default: PayMethodEnum.DIRECT })
@@ -30,8 +30,8 @@ export class Bill {
         quantity: number,
     }[];
 
-    @Prop({ type: String, default: "" })
-    totalPrice: string;
+    @Prop({ type: Number, default: 0 })
+    totalPrice: number;
 
 }
 export type BillDocument = HydratedDocument<Bill>;

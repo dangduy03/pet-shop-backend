@@ -8,6 +8,7 @@ import { CreateBillDto } from './dto/create-bill.dto';
 import { UpdateBillDto } from './dto/update-bill.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { StatusBillEnum } from './enum/status-bill.enum';
+import { GetCurrentUserId } from 'util/decorator/get-current-user-id.decorator';
 
 @ApiTags("Bills")
 @Controller('bill')
@@ -26,10 +27,13 @@ export class BillController {
 
     @Post('')
     @HttpCode(201)
-    async create(@Body() body: CreateBillDto): Promise<any> {
-        body.status = StatusBillEnum.WAIT;
+    async create(
+        @GetCurrentUserId() userId: string,    
+        @Body() body: CreateBillDto
+    ): Promise<any> {
+        body.status = StatusBillEnum.WAITING;
         const result = await this.billService.create(body);
-        await this.billService.emptyPurchaseCart(body.userId);
+        await this.billService.emptyPurchaseCart(userId);
         return result;
     }
 
@@ -39,6 +43,7 @@ export class BillController {
         @Body() body: UpdateBillDto,
     ): Promise<any> {
         const result = await this.billService.updateOneById(id, body);
+        await this.billService.updateProductQuantity(body);
         return result;
     }
 

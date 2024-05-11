@@ -1,5 +1,5 @@
 export enum StatusBillEnum {
-    WAIT = "WAIT",
+    WAITING = "WAITING",
     CONFIRMED = "CONFIRMED",
     DELIVERING = "DELIVERING",
     RECEIVED = "RECEIVED",
