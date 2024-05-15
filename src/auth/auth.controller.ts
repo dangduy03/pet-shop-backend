@@ -28,11 +28,12 @@ export class AuthController {
     @Public()
     @Post('send-otp')
     sendOtp(@Body() body: any) {
+        console.log(body);
         return this.otpService.sendOtp(body.email);
     }
 
     @Public()
-    @Post('vefified-otp')
+    @Post('verified-otp')
     verifiedOtp(@Body() pagram: VerifiedOtpDto) {
         return this.otpService.verifiedOtp(pagram.otp, pagram.email);
     }
