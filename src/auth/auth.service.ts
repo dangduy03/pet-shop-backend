@@ -57,7 +57,7 @@ export class AuthService {
                 throw new UnauthorizedException("Wrong old password!");
             }
 
-        user.password = password;
+        user.password = await bcrypt.hashSync(password,10);
         const id = user._id;
         delete user._id;
 
