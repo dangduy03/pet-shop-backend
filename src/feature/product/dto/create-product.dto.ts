@@ -10,6 +10,11 @@ export class CreateProductDto {
     @IsMongoId()
     categoryId: string;
 
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    name: string;
+
     @ApiProperty({ required: false })
     @IsOptional()
     @IsString()

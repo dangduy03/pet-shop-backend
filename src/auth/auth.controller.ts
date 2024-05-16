@@ -41,10 +41,10 @@ export class AuthController {
     @Public()
     @Post('change-password')
     resetPassword(@Body() body: any) {
-        if (!body.email || !body.password) {
+        if (!body.email || !body.password || !body.oldPassword) {
             return new BadRequestException("email and password required!");
         }
-        const { email, password } = body;
-        return this.authService.resetPassword(email, password);
+        const { email, password , oldPassword} = body;
+        return this.authService.resetPassword(email, password, oldPassword);
     }
 }
