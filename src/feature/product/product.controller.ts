@@ -8,12 +8,14 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { FilesInterceptor } from '@nestjs/platform-express';
+import { Public } from 'util/guard/jwt.guard';
 
 @ApiTags("Products")
 @Controller('product')
 export class ProductController {
     constructor(readonly productService: ProductService) { }
 
+    @Public()
     @Get('')
     async findAll(
         @ApiQueryParams() { filter, population, ...options }: AqpDto,

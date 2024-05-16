@@ -9,6 +9,9 @@ export class Product {
     @Prop({ type: String, ref: "Category" })
     categoryId: string;
 
+    @Prop({type: String, default: ""})
+    name: string;
+
     @Prop({ type: String, default: "" })
     age: string;
 

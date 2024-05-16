@@ -16,6 +16,7 @@ import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { FeedbackModule } from './feature/feedback/feedback.module';
 import AQPMiddleware from 'util/interceptor/aqp/aqp.middleware';
 import { UploadModule } from './provider/upload-file-service/upload.module';
+import { LoggingMiddleware } from 'util/middleware/logging.middleware';
 
 
 const routers = [
@@ -54,5 +55,6 @@ export default class AppModule implements NestModule {
     consumer.apply(AQPMiddleware).forRoutes({
       path: '*', method: RequestMethod.GET
     });
+    consumer.apply(LoggingMiddleware).forRoutes('*');
   }
 }

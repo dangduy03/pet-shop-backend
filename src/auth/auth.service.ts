@@ -42,13 +42,20 @@ export class AuthService {
         }
     }
 
-    async resetPassword(email: string, password : string):Promise<any> {
+    async resetPassword(email: string, password : string, oldPassword: string):Promise<any> {
+
         const user = await this.userService.findOneBy({
             email,
         });
         if(!user) {
             throw new UnauthorizedException();
         }
+
+        const checkPassword = await bcrypt.compareSync(oldPassword,user.password);
+        if(checkPassword ==false) 
+            {
+                throw new UnauthorizedException("Wrong old password!");
+            }
 
         user.password = password;
         const id = user._id;

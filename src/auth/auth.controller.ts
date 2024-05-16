@@ -28,11 +28,12 @@ export class AuthController {
     @Public()
     @Post('send-otp')
     sendOtp(@Body() body: any) {
+        console.log(body);
         return this.otpService.sendOtp(body.email);
     }
 
     @Public()
-    @Post('vefified-otp')
+    @Post('verified-otp')
     verifiedOtp(@Body() pagram: VerifiedOtpDto) {
         return this.otpService.verifiedOtp(pagram.otp, pagram.email);
     }
@@ -40,10 +41,10 @@ export class AuthController {
     @Public()
     @Post('change-password')
     resetPassword(@Body() body: any) {
-        if (!body.email || !body.password) {
+        if (!body.email || !body.password || !body.oldPassword) {
             return new BadRequestException("email and password required!");
         }
-        const { email, password } = body;
-        return this.authService.resetPassword(email, password);
+        const { email, password , oldPassword} = body;
+        return this.authService.resetPassword(email, password, oldPassword);
     }
 }

@@ -7,6 +7,9 @@ import { Types } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { GetCurrentUserId } from 'util/decorator/get-current-user-id.decorator';
+import { Public } from 'util/guard/jwt.guard';
+import { GetCurrentUser } from 'util/decorator/get-current-user';
 
 @ApiTags("Users")
 @Controller('user')
@@ -21,6 +24,13 @@ export class UserController {
             populate: population,
             options,
         });
+    }
+
+    @Get('get-user-token')
+    async getUserToken(
+        @GetCurrentUser() userId : Types.ObjectId
+    ): Promise<any>{
+    return this.userService.findOneById(userId);
     }
 
     @Post('')
