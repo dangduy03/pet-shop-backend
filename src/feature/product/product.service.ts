@@ -12,7 +12,16 @@ export class ProductService extends BaseService<ProductDocument> {
         readonly uploadService: UploadService
     ) {
         super(productRepository);
-        
+        // (async () =>{
+        //     const result = await this.productRepository.findManyBy({age: '1'});
+        //     console.log(result);
+        // });
+        this.test();
+    }
+    async test (){
+        const result = await this.productRepository.findManyBy({name: "Mèo Ba Tư"});
+            console.log(result);
+            return result;
     }
 
     async createProduct(body: CreateProductDto, files: Array<Express.Multer.File>) {

@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { BaseRepository } from "base/base.repository";
+import BaseRepository from "base/base.repository";
 import { Category, CategoryDocument } from "./schema/category.schema";
 import { InjectModel } from "@nestjs/mongoose";
 import { PaginateModel } from "mongoose";

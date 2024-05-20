@@ -20,17 +20,39 @@ export class ProductController {
     async findAll(
         @ApiQueryParams() { filter, population, ...options }: AqpDto,
     ): Promise<any> {
+        population = filter.population;
+        delete filter.population;
+        console.log(population);
+        console.log(filter);
+
+        
+
         return this.productService.findManyBy(filter, {
             populate: population,
             options,
         });
     }
 
+    @Get(':id')
+    async findOneById(
+        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
+        @ApiQueryParams() { filter, population, projection }: AqpDto,
+    ): Promise<any> {
+
+        const result = await this.productService.findOneById(id, {
+            populate: population,
+            projection,
+        });
+        if (!result) throw new NotFoundException('The item does not exist');
+
+        return result;
+    }
+
     @Post('')
     @UseInterceptors(FilesInterceptor('files'))
     @HttpCode(201)
-    async create(@Body() body: CreateProductDto,@UploadedFiles() files: Array<Express.Multer.File>): Promise<any> {
-        const result = await this.productService.createProduct(body,files);
+    async create(@Body() body: CreateProductDto, @UploadedFiles() files: Array<Express.Multer.File>): Promise<any> {
+        const result = await this.productService.createProduct(body, files);
         return result;
     }
 
@@ -64,18 +86,5 @@ export class ProductController {
         return this.productService.paginate(query);
     }
 
-    @Get(':id')
-    async findOneById(
-        @Param('id', ParseObjectIdPipe) id: Types.ObjectId,
-        @ApiQueryParams() { filter, population, projection }: AqpDto,
-    ): Promise<any> {
-        const result = await this.productService.findOneById(id, {
-            populate: population,
-            projection,
-        });
 
-        if (!result) throw new NotFoundException('The item does not exist');
-
-        return result;
-    }
 }

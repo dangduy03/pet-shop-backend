@@ -1,19 +1,25 @@
-
+import * as mongoosePaginate from 'mongoose-paginate';
 import {
+    Document,
+    PaginateModel,
+    QueryOptions,
     Types,
     UpdateQuery,
-    QueryOptions,
-    PaginateModel,
-    PaginateResult,
-    PaginateDocument,
-    PaginateOptions,
 } from 'mongoose';
-import * as mongoose from "mongoose-paginate-v2";
-export class BaseRepository<T> {
+
+import { Injectable } from '@nestjs/common';
+import { ObjectId } from 'mongodb';
+
+@Injectable()
+export default class BaseRepository<T extends Document<any, any, any>> {
     private model: PaginateModel<T>;
 
     constructor(model: PaginateModel<T>) {
         this.model = model;
+    }
+
+    public async distinct(field: string, query = {}): Promise<any> {
+        return this.model.distinct(field, query);
     }
 
     /**
@@ -23,7 +29,7 @@ export class BaseRepository<T> {
      * @returns Promsie<T|null>
      */
     public async findOneById(
-        id: Types.ObjectId,
+        id: ObjectId | string,
         options: QueryOptions = {},
     ): Promise<any> {
         return this.model.findById(id, options.projection || '', options).lean();
@@ -49,18 +55,10 @@ export class BaseRepository<T> {
      * @returns Promsie<T|null>
      */
     public async findManyBy(
-        query: any,
+        query = {},
         options: QueryOptions = {},
     ): Promise<any> {
-        const pageInfo = {
-            page: query.skip || 1,
-            sort: query.sort || '-createdAt',
-            populate: query.population || [],
-            projection: query.projection || {},
-        };
-        return this.model
-            .find(query.filter, query.projection || {}, pageInfo)
-            .lean();
+        return this.model.find(query, options.projection || {}, options).lean();
     }
 
     /**
@@ -68,9 +66,17 @@ export class BaseRepository<T> {
      * @param data ObjectModel, default = {}
      * @returns Promise<T>
      */
-    public async create(data = {}): Promise<any> {
-        const result = await this.model.create(data);
-        return result.toObject();
+    public async create(data: any | any[]): Promise<any> {
+        return this.model.create(data);
+    }
+
+    /**
+     * Create model
+     * @param data arrayModel
+     * @returns Promise<T>
+     */
+    public async createMany(data: any[]): Promise<any> {
+        return this.model.insertMany(data);
     }
 
     /**
@@ -83,11 +89,13 @@ export class BaseRepository<T> {
     public async updateOneBy(
         query = {},
         data = {},
-        options: any = { new: true },
+        options: any = { new: true, lean: true },
     ): Promise<any> {
-        return this.model
-            .findOneAndUpdate(query, data as UpdateQuery<any>, options)
-            .lean();
+        return this.model.findOneAndUpdate(
+            query,
+            data as UpdateQuery<any>,
+            options,
+        );
     }
 
     /**
@@ -98,9 +106,9 @@ export class BaseRepository<T> {
      * @returns Promise<T|null>
      */
     public async updateOneById(
-        id: Types.ObjectId,
+        id: ObjectId | any,
         data = {},
-        options = { new: true },
+        options: any = { new: true },
     ): Promise<any> {
         return this.model
             .findByIdAndUpdate(id, data as UpdateQuery<any>, options)
@@ -158,7 +166,7 @@ export class BaseRepository<T> {
     public async deleteOneBy(query = {}): Promise<any> {
         return this.model
             .findOneAndUpdate(query, {
-                $set: { deleted: true },
+                $set: { isDeleted: true },
             } as UpdateQuery<any>)
             .lean();
     }
@@ -179,7 +187,7 @@ export class BaseRepository<T> {
      */
     public async deleteOneById(id: Types.ObjectId): Promise<any> {
         return this.model
-            .findByIdAndUpdate(id, { deleted: true } as UpdateQuery<any>, {
+            .findByIdAndUpdate(id, { isDeleted: true } as UpdateQuery<any>, {
                 new: true,
             })
             .lean();
@@ -190,7 +198,7 @@ export class BaseRepository<T> {
      * @param id ObjectId
      * @returns Promise<T|null>
      */
-    public async deleteOneHardById(id: Types.ObjectId): Promise<any> {
+    public async deleteOneHardById(id: Types.ObjectId | string): Promise<any> {
         return this.model.findByIdAndDelete(id);
     }
 
@@ -201,7 +209,7 @@ export class BaseRepository<T> {
      */
     public async deleteMany(query = {}): Promise<any> {
         return this.model
-            .updateMany(query, { $set: { deleted: true } } as UpdateQuery<any>)
+            .updateMany(query, { $set: { isDeleted: true } } as UpdateQuery<any>)
             .lean();
     }
 
@@ -221,7 +229,9 @@ export class BaseRepository<T> {
      */
     public async deleteManyByIds(ids: Types.ObjectId[] = []): Promise<any> {
         return this.model
-            .updateMany({ _id: { $in: ids } }, { deleted: true } as UpdateQuery<any>)
+            .updateMany({ _id: { $in: ids } }, {
+                isDeleted: true,
+            } as UpdateQuery<any>)
             .lean();
     }
 
@@ -234,7 +244,7 @@ export class BaseRepository<T> {
         return this.model.deleteMany({ _id: { $in: ids } }).lean();
     }
 
-    public async findAndCount(query = {}): Promise<Number> {
+    public async findAndCount(query = {}): Promise<number> {
         return this.model.countDocuments(query);
     }
 
@@ -243,9 +253,7 @@ export class BaseRepository<T> {
      * @param query object
      * @returns Promise<PaginateResult>
      */
-    public paginate(
-        query: any,
-    ): Promise<PaginateResult<PaginateDocument<any, {}, PaginateOptions>>> {
+    public paginate(query: any): Promise<Record<string, any>> {
         const customLabels = {
             docs: 'results',
             limit: 'limit',
