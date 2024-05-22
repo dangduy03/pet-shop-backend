@@ -8,8 +8,8 @@ export class Feedback {
     @Prop({ type: String, ref: "User" })
     userId: string;
 
-    @Prop({ type: String, default: "" })
-    image: string;
+    @Prop({type: String, ref: "Product"})
+    productId: string;
 
     @Prop({ type: String, default: "" })
     description: string;
