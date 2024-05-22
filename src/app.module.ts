@@ -18,6 +18,13 @@ import AQPMiddleware from 'util/interceptor/aqp/aqp.middleware';
 import { UploadModule } from './provider/upload-file-service/upload.module';
 import { LoggingMiddleware } from 'util/middleware/logging.middleware';
 
+const mongoosePaginate = require('mongoose-paginate-v2');
+
+mongoosePaginate.paginate.options = {
+  lean: true,
+  limit: 20,
+  page: 1,
+};
 
 const routers = [
   UserModule,
@@ -32,7 +39,12 @@ const routers = [
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb+srv://dangduynguyen03:chicungduoc1403@cluster0.gxuoedq.mongodb.net/pet-shop-db?retryWrites=true&w=majority&appName=Cluster0'),
+    MongooseModule.forRoot('mongodb+srv://dangduynguyen03:chicungduoc1403@cluster0.gxuoedq.mongodb.net/pet-shop-db?retryWrites=true&w=majority&appName=Cluster0',{
+      connectionFactory: (connection) =>{
+        connection.plugin(mongoosePaginate);
+        return connection;
+      }
+    }),
     RedisModule.forRoot({
       config: {
         host: 'redis-18481.c11.us-east-1-2.ec2.redns.redis-cloud.com',

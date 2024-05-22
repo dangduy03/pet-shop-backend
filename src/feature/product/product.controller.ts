@@ -20,13 +20,6 @@ export class ProductController {
     async findAll(
         @ApiQueryParams() { filter, population, ...options }: AqpDto,
     ): Promise<any> {
-        population = filter.population;
-        delete filter.population;
-        console.log(population);
-        console.log(filter);
-
-        
-
         return this.productService.findManyBy(filter, {
             populate: population,
             options,

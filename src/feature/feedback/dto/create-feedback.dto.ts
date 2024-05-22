@@ -1,5 +1,5 @@
-import { IsArray, IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 
 
@@ -9,14 +9,13 @@ export class CreateFeedbackDto {
     @IsMongoId()
     userId: string;
 
-    @ApiProperty({ required: false })
-    @IsOptional()
-    @IsString()
-    image: string;
+    @ApiProperty({ required: true })
+    @IsNotEmpty()
+    @IsMongoId()
+    productId: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
     description: string;
-
 }

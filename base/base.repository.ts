@@ -1,4 +1,3 @@
-import * as mongoosePaginate from 'mongoose-paginate';
 import {
     Document,
     PaginateModel,

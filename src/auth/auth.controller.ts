@@ -28,7 +28,6 @@ export class AuthController {
     @Public()
     @Post('send-otp')
     sendOtp(@Body() body: any) {
-        console.log(body);
         return this.otpService.sendOtp(body.email);
     }
 
