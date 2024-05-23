@@ -1,4 +1,4 @@
-import { IsArray, IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsOptional, IsString } from "class-validator";
+import { IsArray, IsEmail, IsEnum, IsMongoId, IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 import { StatusBillEnum } from "../enum/status-bill.enum";
 import { PayMethodEnum } from "../enum/pay-method.enum";
@@ -27,7 +27,7 @@ export class CreateBillDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @IsString()
+    @IsNumber()
     totalPrice: string;
 
     @ApiProperty()
