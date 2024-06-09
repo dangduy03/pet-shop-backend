@@ -47,9 +47,9 @@ const routers = [
     }),
     RedisModule.forRoot({
       config: {
-        host: 'redis-18481.c11.us-east-1-2.ec2.redns.redis-cloud.com',
-        port: 18481,
-        password: 'dGjEFNE7VJuF6mK6plJKApIuf0RklhS0'
+        host: 'redis-11307.c265.us-east-1-2.ec2.redns.redis-cloud.com',
+        port: 11307,
+        password: 'mLJZviM4fpMlVH2LJ1uZGgehVlMKIAGD'
       }
     }),
     ...routers,
